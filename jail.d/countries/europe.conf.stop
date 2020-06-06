@@ -1,0 +1,10 @@
+#Rest of Europe, others than named ones
+[europe]
+enabled = true
+port = http,https
+filter = europe
+logpath  = /var/log/custom/europe.log
+maxretry = 1
+#findtime = 30d
+bantime = -1 
+#action = %(action_mwl)s

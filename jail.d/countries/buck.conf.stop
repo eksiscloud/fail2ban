@@ -1,0 +1,10 @@
+#Buck
+[buck]
+enabled = true
+port = http,https
+filter = buck
+logpath  = /var/log/custom/buck.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

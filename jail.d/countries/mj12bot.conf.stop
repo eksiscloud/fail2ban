@@ -1,0 +1,10 @@
+#MJ12bot
+[mj12bot]
+enabled = true
+port = http,https
+filter = mj12bot
+logpath  = /var/log/custom/mj12bot.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

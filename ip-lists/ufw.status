@@ -1,0 +1,15 @@
+Status: active
+
+To                         Action      From
+--                         ------      ----
+OpenSSH                    ALLOW       Anywhere                  
+587                        ALLOW       Anywhere                  
+2812                       ALLOW       Anywhere                  
+Nginx Full                 ALLOW       Anywhere                  
+60000:61000/udp            ALLOW       Anywhere                  
+OpenSSH (v6)               ALLOW       Anywhere (v6)             
+587 (v6)                   ALLOW       Anywhere (v6)             
+2812 (v6)                  ALLOW       Anywhere (v6)             
+Nginx Full (v6)            ALLOW       Anywhere (v6)             
+60000:61000/udp (v6)       ALLOW       Anywhere (v6)             
+
