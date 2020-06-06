@@ -7,7 +7,7 @@ before = paths-debian.conf
 [DEFAULT]
 
 ignorself = true
-ignoreip = 127.0.0.1/8 ::1 
+ignoreip = 127.0.0.1/8 ::1 104.248.141.204 85.76.133.66
 
 #ignorecommand =
 
@@ -27,8 +27,8 @@ filter = %(__name__)s[mode=%(mode)s]
 
 # ACTIONS
 
-destemail = admin@example.tld
-sender = fail2ban@example.tld
+destemail = jakke.lehtonen@eksis.one
+sender = fail2ban@eksis.one
 mta = sendmail
 #mta = mail
 protocol = tcp
