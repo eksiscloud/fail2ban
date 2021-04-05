@@ -1,0 +1,10 @@
+#Hetzner
+[hetzner]
+enabled = true
+port = http,https
+filter = hetzner
+logpath  = /var/log/custom/hetzner.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

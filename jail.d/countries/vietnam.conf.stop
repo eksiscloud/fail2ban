@@ -1,0 +1,10 @@
+#Vietnam
+[vietnam]
+enabled = true
+port = http,https
+filter = vietnam
+logpath  = /var/log/custom/vietnam.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

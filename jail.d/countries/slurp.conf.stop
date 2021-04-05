@@ -1,0 +1,10 @@
+#Slurp
+[slurp]
+enabled = true
+port = http,https
+filter = slurp
+logpath  = /var/log/custom/slurp.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

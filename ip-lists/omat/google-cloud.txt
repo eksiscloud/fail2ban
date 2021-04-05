@@ -1,0 +1,6 @@
+34.64.0.0/10		bidswitchbot
+35.184.0.0/13
+35.192.0.0/12
+35.208.0.0/12		bidswitchbot
+35.224.0.0/12		bidswitchbot
+35.240.0.0/13		bidswitchbot

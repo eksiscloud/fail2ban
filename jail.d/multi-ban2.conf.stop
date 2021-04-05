@@ -1,0 +1,10 @@
+# 2 multi-ban in 1 year > Ban forever
+[multi-ban2]
+filter = multiban
+logpath = /var/log/fail2ban.log
+maxretry = 2
+findtime = 1
+action = iptables-tarpit[name=ALL]
+         mail-whois-lines[name=%(__name__)s, dest=%(destemail)s, logpath=%(logpath)s]
+bantime = 1
+enabled = true

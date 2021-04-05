@@ -1,0 +1,10 @@
+#Others from the States than named ones
+[usa]
+enabled = true
+port = http,https
+filter = usa
+logpath  = /var/log/custom/usa.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

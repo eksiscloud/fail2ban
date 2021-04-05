@@ -1,0 +1,10 @@
+#Others from the UK than named ones
+[uk]
+enabled = true
+port = http,https
+filter = uk
+logpath  = /var/log/custom/uk.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

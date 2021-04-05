@@ -1,0 +1,10 @@
+#Other bots than named ones
+[bots]
+enabled = true
+port = http,https
+filter = bots
+logpath  = /var/log/custom/bots.log
+maxretry = 1
+#findtime = 30d
+bantime = -1 
+action = %(action_mwl)s

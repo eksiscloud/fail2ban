@@ -1,0 +1,371 @@
+# Comments: use '#' for comment lines and ';' (following a space) for inline comments
+
+[INCLUDES]
+
+before = paths-debian.conf
+
+[DEFAULT]
+
+ignorself = true
+ignoreip = 127.0.0.1/8 ::1 104.248.141.204 85.76.133.66
+
+#ignorecommand =
+
+bantime  = 1h
+findtime  = 1h
+maxretry = 2
+
+backend = auto
+usedns = warn
+logencoding = auto
+
+enabled = false
+
+mode = normal
+filter = %(__name__)s[mode=%(mode)s]
+
+
+# ACTIONS
+
+destemail = jakke.lehtonen@eksis.one
+sender = fail2ban@eksis.one
+mta = sendmail
+#mta = mail
+protocol = tcp
+
+chain = <known/chain>
+port = 0:65535
+
+fail2ban_agent = Fail2Ban/%(fail2ban_version)s
+
+# Action shortcuts. To be used to define action parameter
+
+banaction = iptables-multiport
+banaction_allports = iptables-allports
+banaction-geo = geoblock
+
+
+# The simplest action to take: ban only
+action_ = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+
+# ban & send an e-mail with whois report to the destemail.
+action_mw = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+            %(mta)s-whois[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+# ban & send an e-mail with whois report and relevant log lines to the destemail.
+action_mwl = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+             %(mta)s-whois-lines[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s"]
+
+# See the IMPORTANT note in action.d/xarf-login-attack for when to use this action
+#
+# ban & send a xarf e-mail to abuse contact of IP address and include relevant log lines
+# to the destemail.
+action_xarf = %(banaction)s[name=%(__name__)s, bantime="%(bantime)s", port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+             xarf-login-attack[service=%(__name__)s, sender="%(sender)s", logpath=%(logpath)s, port="%(port)s"]
+
+# ban IP on CloudFlare & send an e-mail with whois report and relevant log lines to the destemail.
+action_cf_mwl = cloudflare[cfuser="%(cfemail)s", cftoken="%(cfapikey)s"]
+                %(mta)s-whois-lines[name=%(__name__)s, sender="%(sender)s", dest="%(destemail)s", logpath=%(logpath)s, chain="%(chain)s"]
+
+# Report block via blocklist.de fail2ban reporting service API
+# 
+# See the IMPORTANT note in action.d/blocklist_de.conf for when to use this action.
+action_blocklist_de  = blocklist_de[email="%(sender)s", service=%(filter)s, apikey="%(blocklist_de_apikey)s", agent="%(fail2ban_agent)s"]
+
+# Report ban via badips.com, and use as blacklist
+#
+# See BadIPsAction docstring in config/action.d/badips.py for
+# documentation for this action.
+#
+# NOTE: This action relies on banaction being present on start and therefore
+# should be last action defined for a jail.
+#
+action_badips = badips.py[category="%(__name__)s", banaction="%(banaction)s", agent="%(fail2ban_agent)s"]
+
+# Report ban via badips.com (uses action.d/badips.conf for reporting only)
+action_badips_report = badips[category="%(__name__)s", agent="%(fail2ban_agent)s"]
+
+# Report ban via abuseipdb.com.
+#
+# See action.d/abuseipdb.conf for usage example and details.
+action_abuseipdb = abuseipdb
+
+# Choose default action.
+action = %(action_)s
+
+# JAILS
+
+# HTTP servers
+
+[apache-auth]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 4h
+
+[apache-badbots]
+# Ban hosts which agent identifies spammer robots crawling the web
+# for email addresses. The mail outputs are buffered.
+#enabled = true
+port     = http,https
+logpath  = %(apache_access_log)s
+findtime  = 10m
+bantime  = 24h
+maxretry = 1
+
+[apache-noscript]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 4h
+
+[apache-overflows]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 4h
+maxretry = 1
+
+[apache-nohome]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 4h
+maxretry = 1
+
+[apache-botsearch]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 24h
+maxretry = 1
+
+[apache-fakegooglebot]
+#enabled = true
+port     = http,https
+logpath  = %(apache_access_log)s
+findtime  = 10m
+bantime = 24h
+maxretry = 1
+ignorecommand = %(ignorecommands_dir)s/apache-fakegooglebot <ip>
+
+[apache-modsecurity]
+#enabled = true
+port     = http,https
+logpath  = %(apache_error_log)s
+findtime  = 10m
+bantime = 4h
+maxretry = 1
+
+[apache-shellshock]
+#enabled = true
+port    = http,https
+logpath = %(apache_error_log)s
+findtime  = 10m
+bantime = 24h
+maxretry = 1
+
+[apache-wootwoot]
+#enabled = true
+filter   = apache-wootwoot
+action   = iptables[name=HTTP, port="80,443", protocol=tcp]
+logpath  = /var/log/apache2/error.log
+maxretry = 1
+bantime  = 864000
+findtime = 3600
+
+[nginx-http-auth]
+#enabled = true
+port    = http,https
+logpath = %(nginx_error_log)s
+findtime  = 10m
+
+# To use 'nginx-limit-req' jail you should have `ngx_http_limit_req_module` 
+# and define `limit_req` and `limit_req_zone` as described in nginx documentation
+# http://nginx.org/en/docs/http/ngx_http_limit_req_module.html
+# or for example see in 'config/filter.d/nginx-limit-req.conf'
+[nginx-limit-req]
+#enabled = true
+port    = http,https
+logpath = %(nginx_error_log)s
+findtime  = 10m
+
+[nginx-botsearch]
+#enabled = true
+port     = http,https
+logpath  = %(nginx_error_log)s
+findtime  = 10m
+maxretry = 2
+
+# block bad bots not respecting robots.txt
+[robots-txt]
+#enabled = true
+filter = robots-txt
+action = iptables-multiport[name=HTTP, port="http,https", protocol=tcp]
+logpath = /var/log/nginx/ban.log
+findtime = 1h
+maxretry = 1
+bantime = 24h
+
+[varnish-badbots]
+#enabled = true
+port     = http,https
+filter   = varnish-badbots
+logpath  = /var/log/varnish/varnishncsa.log
+findtime = 24h
+maxretry = 1
+bantime  = -1
+
+#Knock knock, who's there
+[varnish-530]
+#enabled = true
+port = http,https
+filter = varnish-413
+logpath  = /var/log/varnish/varnishncsa.log
+maxretry = 2
+findtime = 24h
+bantime = 12h
+action = %(action_mwl)s
+
+# Protect against DOS attack
+# 100 request in 5 min > Ban for 2 weeks
+[http-get-dos]
+#enabled = true
+port = http,https
+filter = http-get-dos
+logpath = /var/log/nginx/access.log
+maxretry = 300
+findtime = 600
+action = iptables[name=HTTP, port=http, protocol=tcp]
+bantime = 14d
+
+[php-url-fopen]
+#enabled = true
+port    = http,https
+logpath = %(apache_access_log)s
+findtime  = 10m
+
+
+# Web Applications
+
+[monit]
+#enabled = true
+filter = monit
+port = 2812
+logpath = /var/log/monit*.log
+findtime  = 10m
+bantime = 24h
+maxretry = 2
+
+[wordpress]
+#enabled = true
+port = http,https
+filter = wordpress
+logpath = /var/log/nginx/access.log
+#action = %(action_mwl)s
+maxretry = 2
+findtime = 1h
+bantime = 12h
+
+[wordpress-wp]
+#enabled = true
+port = http,https
+filter = wordpress-wp
+logpath = /var/log/nginx/access.log
+#action = %(action_mwl)s
+maxretry = 2
+findtime = 1h
+bantime = 4h
+
+[wordpress-xml]
+#enabled = true
+port = http,https
+filter = wordpress-xml
+logpath = /var/log/nginx/access.log
+#action = %(action_mwl)s
+maxretry = 1
+findtime = 12h
+bantime = 24h
+
+[moodle]
+#enabled = true
+port = http,https
+filter = moodle
+logpath = /var/log/apache2/access*.log
+maxretry = 4
+findtime = 15m
+bantime = 1h
+
+
+# HTTP Proxy servers
+
+# FTP servers
+
+# Mail servers
+
+[postfix]
+# To use another modes set filter parameter "mode" in jail.local:
+#enabled = true
+mode    = more
+port    = smtp,465,submission
+logpath = %(postfix_log)s
+backend = %(postfix_backend)s
+findtime  = 10m
+
+[postfix-rbl]
+#enabled = true
+filter   = postfix[mode=rbl]
+port     = smtp,465,submission
+logpath  = %(postfix_log)s
+backend  = %(postfix_backend)s
+findtime  = 10m
+maxretry = 1
+
+# Mail servers authenticators: might be used for smtp,ftp,imap servers, so
+# all relevant ports get banned
+
+[postfix-sasl]
+#enabled = true
+filter   = postfix[mode=auth]
+port     = smtp,465,submission,imap,imaps,pop3,pop3s
+# You might consider monitoring /var/log/mail.warn instead if you are
+# running postfix since it would provide the same log lines at the
+# "warn" level but overall at the smaller filesize.
+# logpath  = /var/log/mail.warn
+logpath  = %(postfix_log)s
+backend  = %(postfix_backend)s
+findtime  = 10m
+
+
+# Miscellaneous
+
+# To log wrong MySQL access attempts add to /etc/my.cnf in [mysqld] or
+# equivalent section:
+# log-warning = 2
+#
+# for syslog (daemon facility)
+# [mysqld_safe]
+# syslog
+#
+# for own logfile
+# [mysqld]
+# log-error=/var/log/mysqld.log
+[mysqld-auth]
+#enabled = true
+port     = 3306
+logpath  = %(mysql_log)s
+backend  = %(mysql_backend)s
+findtime  = 10m
+
+[phpmyadmin-syslog]
+#enabled = true
+port    = http,https
+logpath = %(syslog_authpriv)s
+backend = %(syslog_backend)s
+findtime  = 10m

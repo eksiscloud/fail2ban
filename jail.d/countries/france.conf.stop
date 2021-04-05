@@ -1,0 +1,10 @@
+#France
+[france]
+enabled = true
+port = http,https
+filter = france
+logpath  = /var/log/custom/france.log
+maxretry = 1
+#findtime = 30d
+bantime = -1 
+#action = %(action_mwl)s

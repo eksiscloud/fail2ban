@@ -1,0 +1,10 @@
+#Mail.RU_bot
+[mailrubot]
+enabled = true
+port = http,https
+filter = mailrubot
+logpath  = /var/log/custom/mailrubot.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

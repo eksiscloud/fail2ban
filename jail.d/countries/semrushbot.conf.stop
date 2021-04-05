@@ -1,0 +1,10 @@
+#Semrushbot
+[semrushbot]
+enabled = true
+port = http,https
+filter = semrushbot
+logpath  = /var/log/custom/semrushbot.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

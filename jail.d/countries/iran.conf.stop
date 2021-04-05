@@ -1,0 +1,10 @@
+#Iran
+[iran]
+enabled = true
+port = http,https
+filter = iran
+logpath  = /var/log/custom/iran.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

@@ -1,0 +1,9 @@
+# 2 ban in i week > Ban for 4 week
+[multi-ban]
+filter = ban
+logpath = /var/log/fail2ban.log
+maxretry = 2
+findtime = 7d
+action = iptables-tarpit[name=ALL]
+bantime = 30d
+enabled = true

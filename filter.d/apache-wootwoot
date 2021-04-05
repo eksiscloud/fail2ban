@@ -1,0 +1,11 @@
+# Fail2Ban configuration file
+    #
+    # Author: Jackie Craig Sparks
+    #
+    # $Revision: 728 $
+    #
+[Definition]
+Woot woot messages
+failregex = ^\[\w{1,3} \w{1,3} \d{1,2} \d{1,2}:\d{1,2}:\d{1,2} \d{1,4}] \[error] \[client 195.140.144.30] File does not exist: \/.{1,20}\/(w00tw00t|wootwoot|WootWoot|WooTWooT).{1,250}
+
+ignoreregex =

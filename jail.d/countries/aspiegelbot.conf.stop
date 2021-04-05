@@ -1,0 +1,10 @@
+#AspiegelBot
+[aspiegelbot]
+enabled = true
+port = http,https
+filter = aspiegelbot
+logpath  = /var/log/custom/aspiegelbot.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s

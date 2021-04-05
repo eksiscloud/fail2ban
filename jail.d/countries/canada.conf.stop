@@ -1,0 +1,10 @@
+#Canada
+[canada]
+enabled = true
+port = http,https
+filter = canada
+logpath  = /var/log/custom/canada.log
+maxretry = 1
+#findtime = 30d
+bantime = 1 
+action = %(action_mwl)s
