@@ -2,3 +2,4 @@ paths-arch.conf
 paths-common.conf
 paths-debian.conf 
 paths-opensuse.conf
+jail.conf
